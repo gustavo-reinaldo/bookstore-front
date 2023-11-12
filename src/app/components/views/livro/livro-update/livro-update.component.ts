@@ -1,16 +1,15 @@
-import { OnInit } from '@angular/core';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { LivroService } from '../livro.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Livro } from '../livro.model';
 
 @Component({
-  selector: 'app-livro-create',
-  templateUrl: './livro-create.component.html',
-  styleUrls: ['./livro-create.component.css']
+  selector: 'app-livro-update',
+  templateUrl: './livro-update.component.html',
+  styleUrls: ['./livro-update.component.css']
 })
-export class LivroCreateComponent implements OnInit {
+export class LivroUpdateComponent implements OnInit  {
 
   id_cat: String = ''
 
@@ -34,22 +33,30 @@ export class LivroCreateComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.id_cat = this.route.snapshot.paramMap.get('id_cat')!
-  }
-
-
-  create (): void {
-    this.service.create(this.livro, this.id_cat).subscribe((resposta) => {
-      this.router.navigate([`categorias/${this.id_cat}/livros`]);
-      this.service.mensagem('Livro criado com sucesso!'); 
-    }, err => {
-      this.router.navigate([`categorias/${this.id_cat}/livros`]);
-      this.service.mensagem("Erro ao criar novo livro, tente novamente mais tarde.")
-    })
+    this.id_cat = this.route.snapshot.paramMap.get('id_cat')!;
+    this.livro.id = this.route.snapshot.paramMap.get('id')!
+    this.findById();
   }
 
   cancel(): void {
     this.router.navigate([`categorias/${this.id_cat}/livros`]);
+  }
+
+  findById(): void {
+    this.service.findById(this.livro.id!).subscribe((resposta) => {
+      this.livro = resposta;
+
+    })
+  }
+
+  update():void {
+    this.service.update(this.livro).subscribe((resposta) => {
+      this.router.navigate([`categorias/${this.id_cat}/livros`]);
+      this.service.mensagem("Livro atualizado com sucesso!.")
+    }, err => {
+      this.router.navigate([`categorias/${this.id_cat}/livros`]);
+      this.service.mensagem('Falha ao atualizar livro, tente novamente.')
+    })
   }
 
   getMessage() {
@@ -64,5 +71,7 @@ export class LivroCreateComponent implements OnInit {
     }
     return false;
   }
+
+
 
 }

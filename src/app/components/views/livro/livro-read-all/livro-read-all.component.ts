@@ -3,6 +3,7 @@ import { Livro } from '../livro.model';
 import { LivroService } from '../livro.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-livro-read-all',
   templateUrl: './livro-read-all.component.html',
